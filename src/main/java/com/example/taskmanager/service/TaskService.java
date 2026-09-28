@@ -1,6 +1,7 @@
 package com.example.taskmanager.service;
 
 
+import com.example.taskmanager.exception.TaskNotFoundException;
 import com.example.taskmanager.model.Task;
 import com.example.taskmanager.repository.TaskRepository;
 import lombok.*;
@@ -28,12 +29,19 @@ public class TaskService {
     }
 
     public Task getTaskById(Long id) {
-        return taskRepository.findById(id).orElse(null);
+        return taskRepository.findById(id)
+                .orElseThrow(()->
+                    new TaskNotFoundException("Task with id "+id+" not found")
+                );
     }
 
     public Task updateTask(Task updateTask,Long id) {
-        Task existingTask = taskRepository.findById(id).orElse(null);
-         if(existingTask != null){
+        Task existingTask = taskRepository.findById(id)
+                .orElseThrow(()->
+                new TaskNotFoundException("Task with id "+id+" not found")
+        );
+
+        if(existingTask != null){
              existingTask.setDescription(updateTask.getDescription());
              existingTask.setTitle(updateTask.getTitle());
              existingTask.setStatus(updateTask.getStatus());
@@ -49,8 +57,9 @@ public class TaskService {
     public boolean deleteTask(Long id) {
 
         if (!taskRepository.existsById(id)) {
-            return false;
-        }
+            throw new TaskNotFoundException(
+                    "Task not found with id: " + id
+            );        }
 
         taskRepository.deleteById(id);
         return true;
