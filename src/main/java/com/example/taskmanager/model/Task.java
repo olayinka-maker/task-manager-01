@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
-@Controller
 @Data
 @RequiredArgsConstructor
 @AllArgsConstructor
@@ -31,7 +30,10 @@ public class Task {
     private User user;
 
 
-    public Task(String description, String title, TaskStatus status) {
+    public Task(String title, String description, TaskStatus status) {
+        this.title = title;
+        this.description = description;
+        this.status = status;
     }
 
 //    public Task(@NotBlank(message = "title is required") @Size(max = 100, message = "title must not execeed 100 characters") String title, @Size(max = 500, message = "Description must not exceed 500 characters") String description, @NotNull(message = "Status is required") TaskStatus status) {

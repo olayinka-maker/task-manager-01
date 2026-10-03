@@ -6,7 +6,9 @@ import com.example.taskmanager.dto.TaskResponse;
 import com.example.taskmanager.dto.TaskUpdateRequest;
 import com.example.taskmanager.exception.TaskNotFoundException;
 import com.example.taskmanager.model.Task;
+import com.example.taskmanager.model.User;
 import com.example.taskmanager.repository.TaskRepository;
+import com.example.taskmanager.repository.UserRepository;
 import lombok.*;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,7 @@ public class TaskService {
 
     private final TaskRepository taskRepository;
 
+    private final UserRepository userRepository;
 
     private TaskResponse toResponse(Task task) {
 
@@ -33,11 +36,20 @@ public class TaskService {
 
 
     public TaskResponse createTask(TaskCreateRequest request) {
+
+        User user = userRepository.findById(request.getUserId()).orElseThrow(
+                ()->
+                    new TaskNotFoundException("User not found" + request.getUserId())
+
+        );
+
           Task task = new Task(
                 request.getTitle(),
                 request.getDescription(),
                 request.getStatus()
         );
+
+          task.setUser(user);
 
         Task savedTask = taskRepository.save(task);
 

@@ -27,4 +27,7 @@ public class TaskCreateRequest {
     @NotNull(message = "Status is required")
     @Enumerated(EnumType.STRING)
     private TaskStatus status;
+
+    @NotNull(message = "User ID is required")
+    private Long userId;
 }
