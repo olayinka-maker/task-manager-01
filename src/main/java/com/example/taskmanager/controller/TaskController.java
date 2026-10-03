@@ -11,6 +11,8 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,52 +21,48 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/tasks")
 public class TaskController {
 
     private final TaskService taskService;
 
-    //done
-    @GetMapping("/api/tasks")
+
+    @PostMapping("/create-task")
+    public ResponseEntity<TaskResponse> createTask(@RequestBody @Valid TaskCreateRequest request) {
+
+        TaskResponse createdTask = taskService.createTask(request);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
+    }
+
+    @GetMapping("/geTtasks")
     public List<TaskResponse> getTasks() {
         return taskService.getTasks();
     }
 
-    //done
-    @GetMapping("/api/tasks/{id}")
+    @GetMapping("/{id}")
     public TaskResponse getTaskById(@PathVariable Long id) {
 
         return taskService.getTaskById(id);
     }
 
-
-    //done
-    @PostMapping("/api/create-task")
-    public TaskResponse createTask(@RequestBody @Valid TaskCreateRequest request) {
-
-        return taskService.createTask(request);
-    }
-
-    //done
-    @PutMapping("/api/updatetasks/{id}")
-    public TaskResponse updateTask(
+    @PutMapping("/updatetasks/{id}")
+    public ResponseEntity<TaskResponse> updateTask(
             @PathVariable Long id,
             @RequestBody @Valid TaskUpdateRequest request
     ) {
 
 
-        return taskService.updateTask(request, id);
+        TaskResponse updatedTask =  taskService.updateTask(request, id);
+
+        return ResponseEntity.ok(updatedTask);
     }
 
     //done
     @DeleteMapping("/deleteTask/{id}")
-    public String deleteTask(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
 
-        boolean deleted = taskService.deleteTask(id);
-
-        if (deleted) {
-            return "Task " + id + " deleted";
-        }
-
-        return "Task " + id + " not found";
+        taskService.deleteTask(id);
+        return ResponseEntity.noContent().build();
     }
     }
