@@ -1,6 +1,9 @@
 package com.example.taskmanager.service;
 
 
+import com.example.taskmanager.dto.TaskCreateRequest;
+import com.example.taskmanager.dto.TaskResponse;
+import com.example.taskmanager.dto.TaskUpdateRequest;
 import com.example.taskmanager.exception.TaskNotFoundException;
 import com.example.taskmanager.model.Task;
 import com.example.taskmanager.repository.TaskRepository;
@@ -18,24 +21,47 @@ public class TaskService {
     private final TaskRepository taskRepository;
 
 
+    private TaskResponse toResponse(Task task) {
 
-    public Task createTask(Task task) {
-        return taskRepository.save(task);
+        return new TaskResponse(
+                task.getId(),
+                task.getTitle(),
+                task.getDescription(),
+                task.getStatus()
+        );
+    }
+
+
+    public TaskResponse createTask(TaskCreateRequest request) {
+          Task task = new Task(
+                request.getTitle(),
+                request.getDescription(),
+                request.getStatus()
+        );
+
+        Task savedTask = taskRepository.save(task);
+
+        return toResponse(savedTask);
 
     }
 
-    public List<Task> getTasks() {
-        return taskRepository.findAll();
+    public List<TaskResponse> getTasks() {
+       return taskRepository.findAll()
+               .stream()
+               .map(this::toResponse).toList();
+
     }
 
-    public Task getTaskById(Long id) {
-        return taskRepository.findById(id)
+    public TaskResponse getTaskById(Long id) {
+        Task mytask = taskRepository.findById(id)
                 .orElseThrow(()->
                     new TaskNotFoundException("Task with id "+id+" not found")
                 );
+
+        return toResponse(mytask);
     }
 
-    public Task updateTask(Task updateTask,Long id) {
+    public TaskResponse updateTask(TaskUpdateRequest updateTask, Long id) {
         Task existingTask = taskRepository.findById(id)
                 .orElseThrow(()->
                 new TaskNotFoundException("Task with id "+id+" not found")
@@ -46,7 +72,9 @@ public class TaskService {
              existingTask.setTitle(updateTask.getTitle());
              existingTask.setStatus(updateTask.getStatus());
 
-             return taskRepository.save(existingTask);
+             Task updatedTask = taskRepository.save(existingTask);
+
+             return  toResponse(updatedTask);
 
          }
 
