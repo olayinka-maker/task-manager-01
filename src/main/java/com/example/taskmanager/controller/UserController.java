@@ -1,7 +1,11 @@
 package com.example.taskmanager.controller;
 
+import com.example.taskmanager.dto.UserDto.UserCreateRequest;
+import com.example.taskmanager.dto.UserDto.UserResponse;
 import com.example.taskmanager.model.User;
 import com.example.taskmanager.repository.UserRepository;
+import com.example.taskmanager.service.UserService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserRepository userRepository;
+    private final UserService userService;
 
     @PostMapping("/createUser")
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        User newUser = userRepository.save(user);
+    public ResponseEntity<UserResponse> createUser(@Valid  @RequestBody UserCreateRequest user) {
+        UserResponse newUser = userService.createUser(user);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
