@@ -4,6 +4,7 @@ package com.example.taskmanager.service;
 import com.example.taskmanager.dto.TaskCreateRequest;
 import com.example.taskmanager.dto.TaskResponse;
 import com.example.taskmanager.dto.TaskUpdateRequest;
+import com.example.taskmanager.dto.UserDto.UserResponse;
 import com.example.taskmanager.exception.TaskNotFoundException;
 import com.example.taskmanager.model.Task;
 import com.example.taskmanager.model.User;
@@ -12,6 +13,7 @@ import com.example.taskmanager.repository.UserRepository;
 import lombok.*;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,11 +28,26 @@ public class TaskService {
 
     private TaskResponse toResponse(Task task) {
 
+        UserResponse userResponse = null;
+
+        if (task.getUser() != null) {
+            userResponse = new UserResponse(
+                    task.getUser().getId(),
+                    task.getUser().getName(),
+                    task.getUser().getEmail()
+            );
+        }
+
         return new TaskResponse(
                 task.getId(),
                 task.getTitle(),
                 task.getDescription(),
-                task.getStatus()
+                task.getStatus(),
+                task.getPriority(),
+                task.getCreatedAt(),
+                LocalDate.from(task.getUpdatedAt()),
+                task.getDueDate(),
+                userResponse
         );
     }
 
@@ -46,7 +63,9 @@ public class TaskService {
           Task task = new Task(
                 request.getTitle(),
                 request.getDescription(),
-                request.getStatus()
+                request.getStatus(),
+                  request.getPriority(),
+                  request.getDueDate()
         );
 
           task.setUser(user);
