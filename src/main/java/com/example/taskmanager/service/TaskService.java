@@ -7,6 +7,8 @@ import com.example.taskmanager.dto.TaskUpdateRequest;
 import com.example.taskmanager.dto.UserDto.UserResponse;
 import com.example.taskmanager.exception.TaskNotFoundException;
 import com.example.taskmanager.model.Task;
+import com.example.taskmanager.model.TaskPriority;
+import com.example.taskmanager.model.TaskStatus;
 import com.example.taskmanager.model.User;
 import com.example.taskmanager.repository.TaskRepository;
 import com.example.taskmanager.repository.UserRepository;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -45,7 +48,7 @@ public class TaskService {
                 task.getStatus(),
                 task.getPriority(),
                 task.getCreatedAt(),
-                LocalDate.from(task.getUpdatedAt()),
+                task.getUpdatedAt(),
                 task.getDueDate(),
                 userResponse
         );
@@ -111,6 +114,39 @@ public class TaskService {
 
 
          return null;
+    }
+
+    public List<TaskResponse> geTasksByUserId(Long user_id){
+        return  taskRepository.findTaskByUser_Id(user_id).
+                stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
+    public List<TaskResponse> geTasksByStatus(TaskStatus status){
+        return  taskRepository.findTaskByStatus(status).
+                stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
+    public List<TaskResponse> getTasksByPriority(
+            TaskPriority priority
+    ) {
+
+        return taskRepository.findByPriority(priority)
+                .stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
+    public List<TaskResponse> getTasksByIDandStatus(
+            Long userid, TaskStatus status
+    ) {
+            return taskRepository.findByUser_IdAndStatus(userid,status)
+                    .stream()
+                    .map(this::toResponse)
+                    .toList();
     }
 
     public boolean deleteTask(Long id) {

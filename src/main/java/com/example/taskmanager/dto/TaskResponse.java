@@ -4,6 +4,8 @@ package com.example.taskmanager.dto;
 import com.example.taskmanager.dto.UserDto.UserResponse;
 import com.example.taskmanager.model.TaskPriority;
 import com.example.taskmanager.model.TaskStatus;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,15 +25,16 @@ public class TaskResponse {
     private Long id;
     private String title;
     private String description;
+    @Enumerated(EnumType.STRING)
     private TaskStatus status;
     private UserResponse user;
     private LocalDate dueDate;
     private TaskPriority priority;
     private LocalDateTime createdAt;
-    private LocalDate updatedAt;
+    private LocalDateTime updatedAt;
 
 
-    public TaskResponse(Long id, String title, String description, TaskStatus status, TaskPriority priority, LocalDateTime createdAt, LocalDate updatedAt, LocalDate dueDate, UserResponse userResponse) {
+    public TaskResponse(Long id, String title, String description, TaskStatus status, TaskPriority priority, LocalDateTime createdAt, LocalDateTime updatedAt, LocalDate dueDate, UserResponse userResponse) {
 
         this.id = id;
         this.title = title;

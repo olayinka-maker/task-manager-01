@@ -6,6 +6,8 @@ import com.example.taskmanager.dto.TaskCreateRequest;
 import com.example.taskmanager.dto.TaskResponse;
 import com.example.taskmanager.dto.TaskUpdateRequest;
 import com.example.taskmanager.model.Task;
+import com.example.taskmanager.model.TaskPriority;
+import com.example.taskmanager.model.TaskStatus;
 import com.example.taskmanager.service.TaskService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -56,6 +58,31 @@ public class TaskController {
         TaskResponse updatedTask =  taskService.updateTask(request, id);
 
         return ResponseEntity.ok(updatedTask);
+    }
+
+    @GetMapping("/user/{userId}")
+    public  List<TaskResponse>  getTasksByUserId(@PathVariable Long userId){
+          return taskService.geTasksByUserId(userId);
+    }
+
+    @GetMapping("/status/{status}")
+    public  List<TaskResponse>  getTasksByStatus(@PathVariable TaskStatus status){
+        return taskService.geTasksByStatus(status);
+    }
+
+    @GetMapping("/priority/{priority}")
+    public List<TaskResponse> getTasksByPriority(
+            @PathVariable TaskPriority priority
+    ) {
+        return taskService.getTasksByPriority(priority);
+    }
+
+    @GetMapping("/user/{userId}/status/{status}")
+    public List<TaskResponse> getUserTasksByStatus(
+            @PathVariable Long userId,
+            @PathVariable TaskStatus status
+    ) {
+        return taskService.getTasksByIDandStatus(userId, status);
     }
 
     //done
