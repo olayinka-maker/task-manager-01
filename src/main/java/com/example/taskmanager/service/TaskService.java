@@ -13,6 +13,8 @@ import com.example.taskmanager.model.User;
 import com.example.taskmanager.repository.TaskRepository;
 import com.example.taskmanager.repository.UserRepository;
 import lombok.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -79,10 +81,9 @@ public class TaskService {
 
     }
 
-    public List<TaskResponse> getTasks() {
-       return taskRepository.findAll()
-               .stream()
-               .map(this::toResponse).toList();
+    public Page<TaskResponse> getTasks(Pageable pageable) {
+       return taskRepository.findAll(pageable)
+               .map(this::toResponse);
 
     }
 

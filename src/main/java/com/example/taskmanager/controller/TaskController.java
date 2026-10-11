@@ -13,6 +13,10 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,9 +41,10 @@ public class TaskController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
     }
 
-    @GetMapping("/geTtasks")
-    public List<TaskResponse> getTasks() {
-        return taskService.getTasks();
+    @GetMapping("/getTasks")
+    public Page<TaskResponse> getTasks(  @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
+    )  {
+        return taskService.getTasks(pageable);
     }
 
     @GetMapping("/{id}")
