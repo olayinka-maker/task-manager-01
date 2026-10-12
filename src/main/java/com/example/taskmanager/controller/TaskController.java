@@ -42,9 +42,13 @@ public class TaskController {
     }
 
     @GetMapping("/getTasks")
-    public Page<TaskResponse> getTasks(  @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
+    public Page<TaskResponse> getTasks(@RequestParam(required = false) TaskStatus status,
+                                       @RequestParam(required = false) TaskPriority priority,
+                                       @RequestParam(required = false) String title,
+                                       @RequestParam(required = false) Long userId,
+                                       @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
     )  {
-        return taskService.getTasks(pageable);
+        return taskService.searchTasks(status,priority,title,userId,pageable);
     }
 
     @GetMapping("/{id}")

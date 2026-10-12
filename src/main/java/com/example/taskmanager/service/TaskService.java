@@ -57,6 +57,12 @@ public class TaskService {
     }
 
 
+    public  Page<TaskResponse>  searchTasks(TaskStatus status,TaskPriority priority,String title, Long userId,Pageable pageable){
+        return taskRepository.searchTasks(status,priority,title,userId,pageable)
+                .map(this::toResponse);
+    }
+
+
     public TaskResponse createTask(TaskCreateRequest request) {
 
         User user = userRepository.findById(request.getUserId()).orElseThrow(
